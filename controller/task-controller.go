@@ -55,3 +55,22 @@ func CreateTaskListing(taskInfo model.CreateTaskListingInput) *model.TaskListing
 	}
 	return &taskListing
 }
+
+// GetTaskListing Получение таска
+func GetTaskListing(id string) *model.TaskListing {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	taskId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil
+	}
+	filter := bson.M{"_id": taskId}
+
+	var taskListing model.TaskListing
+	err = collection.FindOne(ctx, filter).Decode(&taskListing)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return &taskListing
+}
