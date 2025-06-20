@@ -19,7 +19,7 @@ type MongoInstance struct {
 var mg *MongoInstance
 var once sync.Once
 
-const dbName = "job_database"
+const dbName = "tasks"
 
 var mongoURI string
 var serverAPIOptions = options.ServerAPI(options.ServerAPIVersion1)
