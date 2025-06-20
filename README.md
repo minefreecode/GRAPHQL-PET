@@ -5,3 +5,7 @@
 - `gqlgen` для GraphQL
 - `viper` для конфигураций
 
+
+# Генерация новых моделей
+- `go run github.com/99designs/gqlgen generate`
+
