@@ -11,6 +11,11 @@ import (
 	"graphql-pet/graph/model"
 )
 
+// CreateTaskListing is the resolver for the createTaskListing field.
+func (r *mutationResolver) CreateTaskListing(ctx context.Context, input model.CreateTaskListingInput) (*model.TaskListing, error) {
+	return controller.CreateTaskListing(input), nil
+}
+
 // Tasks is the resolver for the tasks field.
 func (r *queryResolver) Tasks(ctx context.Context) ([]*model.TaskListing, error) {
 	return controller.GetAllTasks(), nil
@@ -21,7 +26,11 @@ func (r *queryResolver) Task(ctx context.Context, id string) (*model.TaskListing
 	panic(fmt.Errorf("not implemented: Task - task"))
 }
 
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

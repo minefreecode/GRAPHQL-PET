@@ -16,3 +16,13 @@ type Query {
     task(id: ID!): TaskListing!
 }
 
+type Mutation {
+    createTaskListing(input: CreateTaskListingInput!): TaskListing!
+}
+
+input CreateTaskListingInput {
+    title: String!
+    description: String!
+    company: String!
+    url: String
+}

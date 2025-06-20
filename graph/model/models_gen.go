@@ -2,6 +2,16 @@
 
 package model
 
+type CreateTaskListingInput struct {
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Company     string  `json:"company"`
+	URL         *string `json:"url,omitempty"`
+}
+
+type Mutation struct {
+}
+
 type Query struct {
 }
 
