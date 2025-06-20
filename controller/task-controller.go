@@ -37,7 +37,7 @@ func CreateTaskListing(taskInfo model.CreateTaskListingInput) *model.TaskListing
 	defer cancel()
 
 	inserted, err := collection.InsertOne(ctx, bson.M{
-		"title":       taskInfo,
+		"title":       taskInfo.Title,
 		"description": taskInfo.Description,
 		"company":     taskInfo.Company,
 		"url":         taskInfo.URL,
