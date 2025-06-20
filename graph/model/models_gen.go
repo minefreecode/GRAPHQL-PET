@@ -9,6 +9,10 @@ type CreateTaskListingInput struct {
 	URL         *string `json:"url,omitempty"`
 }
 
+type DeleteTaskResponse struct {
+	DeleteTaskID string `json:"deleteTaskId"`
+}
+
 type Mutation struct {
 }
 

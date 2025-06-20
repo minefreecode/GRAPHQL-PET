@@ -47,8 +47,13 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	DeleteTaskResponse struct {
+		DeleteTaskID func(childComplexity int) int
+	}
+
 	Mutation struct {
 		CreateTaskListing func(childComplexity int, input model.CreateTaskListingInput) int
+		DeleteTaskListing func(childComplexity int, id string) int
 		UpdateTaskListing func(childComplexity int, id string, input model.UpdateTaskListingInput) int
 	}
 
@@ -69,6 +74,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateTaskListing(ctx context.Context, input model.CreateTaskListingInput) (*model.TaskListing, error)
 	UpdateTaskListing(ctx context.Context, id string, input model.UpdateTaskListingInput) (*model.TaskListing, error)
+	DeleteTaskListing(ctx context.Context, id string) (*model.DeleteTaskResponse, error)
 }
 type QueryResolver interface {
 	Tasks(ctx context.Context) ([]*model.TaskListing, error)
@@ -94,6 +100,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
+	case "DeleteTaskResponse.deleteTaskId":
+		if e.complexity.DeleteTaskResponse.DeleteTaskID == nil {
+			break
+		}
+
+		return e.complexity.DeleteTaskResponse.DeleteTaskID(childComplexity), true
+
 	case "Mutation.createTaskListing":
 		if e.complexity.Mutation.CreateTaskListing == nil {
 			break
@@ -105,6 +118,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.CreateTaskListing(childComplexity, args["input"].(model.CreateTaskListingInput)), true
+
+	case "Mutation.deleteTaskListing":
+		if e.complexity.Mutation.DeleteTaskListing == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteTaskListing_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteTaskListing(childComplexity, args["id"].(string)), true
 
 	case "Mutation.updateTaskListing":
 		if e.complexity.Mutation.UpdateTaskListing == nil {
@@ -321,6 +346,29 @@ func (ec *executionContext) field_Mutation_createTaskListing_argsInput(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteTaskListing_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Mutation_deleteTaskListing_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteTaskListing_argsID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_updateTaskListing_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -508,6 +556,50 @@ func (ec *executionContext) field___Type_fields_argsIncludeDeprecated(
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _DeleteTaskResponse_deleteTaskId(ctx context.Context, field graphql.CollectedField, obj *model.DeleteTaskResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DeleteTaskResponse_deleteTaskId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeleteTaskID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DeleteTaskResponse_deleteTaskId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DeleteTaskResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_createTaskListing(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createTaskListing(ctx, field)
 	if err != nil {
@@ -636,6 +728,65 @@ func (ec *executionContext) fieldContext_Mutation_updateTaskListing(ctx context.
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_updateTaskListing_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteTaskListing(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteTaskListing(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteTaskListing(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.DeleteTaskResponse)
+	fc.Result = res
+	return ec.marshalNDeleteTaskResponse2ᚖgraphqlᚑpetᚋgraphᚋmodelᚐDeleteTaskResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteTaskListing(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deleteTaskId":
+				return ec.fieldContext_DeleteTaskResponse_deleteTaskId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DeleteTaskResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteTaskListing_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -3161,6 +3312,45 @@ func (ec *executionContext) unmarshalInputUpdateTaskListingInput(ctx context.Con
 
 // region    **************************** object.gotpl ****************************
 
+var deleteTaskResponseImplementors = []string{"DeleteTaskResponse"}
+
+func (ec *executionContext) _DeleteTaskResponse(ctx context.Context, sel ast.SelectionSet, obj *model.DeleteTaskResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, deleteTaskResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("DeleteTaskResponse")
+		case "deleteTaskId":
+			out.Values[i] = ec._DeleteTaskResponse_deleteTaskId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -3190,6 +3380,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "updateTaskListing":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateTaskListing(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteTaskListing":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteTaskListing(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -3721,6 +3918,20 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 func (ec *executionContext) unmarshalNCreateTaskListingInput2graphqlᚑpetᚋgraphᚋmodelᚐCreateTaskListingInput(ctx context.Context, v any) (model.CreateTaskListingInput, error) {
 	res, err := ec.unmarshalInputCreateTaskListingInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNDeleteTaskResponse2graphqlᚑpetᚋgraphᚋmodelᚐDeleteTaskResponse(ctx context.Context, sel ast.SelectionSet, v model.DeleteTaskResponse) graphql.Marshaler {
+	return ec._DeleteTaskResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNDeleteTaskResponse2ᚖgraphqlᚑpetᚋgraphᚋmodelᚐDeleteTaskResponse(ctx context.Context, sel ast.SelectionSet, v *model.DeleteTaskResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._DeleteTaskResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {

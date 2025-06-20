@@ -19,6 +19,7 @@ type Query {
 type Mutation {
     createTaskListing(input: CreateTaskListingInput!): TaskListing!
     updateTaskListing(id: ID!, input: UpdateTaskListingInput!): TaskListing!
+    deleteTaskListing(id: ID!): DeleteTaskResponse!
 }
 
 input CreateTaskListingInput {
@@ -32,4 +33,8 @@ input UpdateTaskListingInput {
     title: String
     description: String
     url: String
+}
+
+type DeleteTaskResponse {
+    deleteTaskId: String!
 }

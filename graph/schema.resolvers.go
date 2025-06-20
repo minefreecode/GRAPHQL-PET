@@ -20,6 +20,11 @@ func (r *mutationResolver) UpdateTaskListing(ctx context.Context, id string, inp
 	return controller.UpdateTaskListing(id, input), nil
 }
 
+// DeleteTaskListing is the resolver for the deleteTaskListing field.
+func (r *mutationResolver) DeleteTaskListing(ctx context.Context, id string) (*model.DeleteTaskResponse, error) {
+	return controller.DeleteTaskListing(id), nil
+}
+
 // Tasks это разрешитель для получения всех тасков
 func (r *queryResolver) Tasks(ctx context.Context) ([]*model.TaskListing, error) {
 	return controller.GetAllTasks(), nil

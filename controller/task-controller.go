@@ -106,3 +106,22 @@ func UpdateTaskListing(id string, taskInfo model.UpdateTaskListingInput) *model.
 
 	return &taskListing
 }
+
+// DeleteTaskListing Удалить таск
+func DeleteTaskListing(id string) *model.DeleteTaskResponse {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	taskId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": taskId}
+	_, err = collection.DeleteOne(ctx, filter)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &model.DeleteTaskResponse{DeleteTaskID: id}
+}
