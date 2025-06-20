@@ -15,6 +15,11 @@ func (r *mutationResolver) CreateTaskListing(ctx context.Context, input model.Cr
 	return controller.CreateTaskListing(input), nil
 }
 
+// UpdateTaskListing это разрешитель для обновления тасков
+func (r *mutationResolver) UpdateTaskListing(ctx context.Context, id string, input model.UpdateTaskListingInput) (*model.TaskListing, error) {
+	return controller.UpdateTaskListing(id, input), nil
+}
+
 // Tasks это разрешитель для получения всех тасков
 func (r *queryResolver) Tasks(ctx context.Context) ([]*model.TaskListing, error) {
 	return controller.GetAllTasks(), nil
@@ -25,10 +30,10 @@ func (r *queryResolver) Task(ctx context.Context, id string) (*model.TaskListing
 	return controller.GetTaskListing(id), nil
 }
 
-// Mutation возвращает реализацию MutationResolver
+// Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
-// Query возврашает реализацию QueryResolver
+// Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }

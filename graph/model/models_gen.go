@@ -22,3 +22,9 @@ type TaskListing struct {
 	Company     string  `json:"company"`
 	URL         *string `json:"url,omitempty"`
 }
+
+type UpdateTaskListingInput struct {
+	Title       *string `json:"title,omitempty"`
+	Description *string `json:"description,omitempty"`
+	URL         *string `json:"url,omitempty"`
+}

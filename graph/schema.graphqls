@@ -18,11 +18,18 @@ type Query {
 
 type Mutation {
     createTaskListing(input: CreateTaskListingInput!): TaskListing!
+    updateTaskListing(id: ID!, input: UpdateTaskListingInput!): TaskListing!
 }
 
 input CreateTaskListingInput {
     title: String!
     description: String!
     company: String!
+    url: String
+}
+
+input UpdateTaskListingInput {
+    title: String
+    description: String
     url: String
 }
